@@ -27,7 +27,7 @@ const items = [
 export function Benefits() {
   const ref = useReveal<HTMLDivElement>();
   return (
-    <section id="beneficios" className="relative py-6 md:py-12 bg-[var(--sand)]/30 border-b border-border/60 overflow-hidden">
+    <section id="beneficios" className="relative py-20 md:py-24 bg-[var(--sand)]/30 border-b border-border/60 overflow-hidden">
       <div ref={ref} className="reveal relative z-10 mx-auto max-w-[1500px] px-6 md:px-10">
         {/* Top: text left, image right */}
         <div className="grid md:grid-cols-12 gap-8 lg:gap-16 items-center mb-10">

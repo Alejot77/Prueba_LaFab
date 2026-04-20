@@ -67,7 +67,7 @@ export function ContactCTA() {
   const isFormValid = form.name && form.email && form.whatsapp;
   return (
     <section id="contacto" className="bg-[var(--ink)] text-[var(--background)]">
-      <div ref={ref} className="reveal mx-auto max-w-[1400px] px-6 md:px-10 py-20 md:py-24">
+      <div ref={ref} className="reveal mx-auto max-w-[1400px] px-6 md:px-10 py-20 md:py-24 ">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-stretch">
           <div className="flex flex-col h-full">
             <p className="text-[0.7rem] tracking-wider-2 uppercase text-white/50 mb-6">
@@ -82,7 +82,7 @@ export function ContactCTA() {
             </p>
 
             {/* Dynamic media panel based on selected format */}
-            <div className="mt-10 rounded-sm overflow-hidden border border-white/10 bg-white/5">
+            <div className="mt-10 rounded-sm overflow-hidden border border-white/10 bg-white/5 ">
               {format === "showroom" && (
                 <div className="flex flex-col">
                   <div className="aspect-[16/10] w-full overflow-hidden">
@@ -162,7 +162,7 @@ export function ContactCTA() {
               )}
             </div>
 
-            <div className="mt-8 hidden lg:flex items-center gap-6 text-[0.7rem] tracking-wider-2 uppercase text-white/60">
+            <div className="mt-8 hidden lg:flex items-center gap-6 text-[0.7rem] tracking-wider-2 uppercase text-white/60 ">
               <span>Bogotá · Medellín</span>
               <span>·</span>
               <span>hola@lafab.co</span>
@@ -170,7 +170,7 @@ export function ContactCTA() {
           </div>
 
           {sent ? (
-            <div className="bg-white text-ink rounded-sm border border-border p-10 md:p-14 shadow-2xl">
+            <div className="bg-white text-ink rounded-sm border border-border p-10 md:p-14 shadow-2xl ">
               <p className="text-[0.7rem] tracking-wider-2 uppercase text-muted-foreground mb-4">
                 Reserva recibida — {current.short}
               </p>
