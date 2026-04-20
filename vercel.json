@@ -1,7 +1,6 @@
 {
-  "outputDirectory": "dist/client",
+  "outputDirectory": "dist",
   "routes": [
-    { "handle": "filesystem" },
     { "src": "/.*", "dest": "/index.html" }
   ]
 }
