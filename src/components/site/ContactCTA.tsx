@@ -250,8 +250,8 @@ export function ContactCTA() {
                 <legend className="text-[0.6rem] tracking-wider-2 uppercase text-muted-foreground mb-3">
                   ¿Cómo quieres descubrir Lutton?
                 </legend>
-                <div className="grid grid-cols-3 gap-2">
-                  {formats.map((f) => {
+                <div className="flex sm:grid sm:grid-cols-3 gap-2 overflow-x-auto sm:overflow-visible pb-2">
+                    {formats.map((f) => {
                     const active = format === f.id;
                     return (
                       <button
@@ -267,7 +267,7 @@ export function ContactCTA() {
                         <span className="block text-[0.6rem] tracking-wider-2 uppercase opacity-60">
                           0{formats.indexOf(f) + 1}
                         </span>
-                        <span className="block mt-1 text-[0.78rem] font-medium">
+                        <span className="block mt-1 text-[0.85rem] sm:text-[0.78rem] font-medium">
                           {f.short}
                         </span>
                       </button>
