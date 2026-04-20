@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useReveal } from "@/hooks/use-reveal";
 import ctaVideocall from "@/assets/cta-videocall.jpg";
 import ctaSamples from "@/assets/cta-samples.jpg";
+import * as emailjs from "@emailjs/browser";
+
 
 const formats = [
   {
@@ -34,9 +36,12 @@ export function ContactCTA() {
   const [sent, setSent] = useState(false);
   const [format, setFormat] = useState<FormatId>("showroom");
   const [form, setForm] = useState({ name: "", email: "", whatsapp: "", notes: "" });
+  const [loading, setLoading] = useState(false);
+  const [submittedName, setSubmittedName] = useState("");
 
   // Sync with hash like #contacto?formato=asesoria coming from InteractiveCTA
   useEffect(() => {
+    
     const sync = () => {
       const hash = window.location.hash;
       const match = hash.match(/formato=(showroom|asesoria|muestras)/);
@@ -49,6 +54,17 @@ export function ContactCTA() {
 
   const current = formats.find((f) => f.id === format) ?? formats[0];
 
+  const whatsappMessage = encodeURIComponent(
+    `Hola LaFab, quiero ${current.cta.toLowerCase()}.
+
+  Nombre: ${form.name}
+  Email: ${form.email}
+  WhatsApp: ${form.whatsapp}
+  Formato: ${current.label}
+
+  ${form.notes ? `Detalles: ${form.notes}` : ""}`
+  );
+  const isFormValid = form.name && form.email && form.whatsapp;
   return (
     <section id="contacto" className="bg-[var(--ink)] text-[var(--background)]">
       <div ref={ref} className="reveal mx-auto max-w-[1400px] px-6 md:px-10 py-20 md:py-24">
@@ -159,19 +175,65 @@ export function ContactCTA() {
                 Reserva recibida — {current.short}
               </p>
               <h3 className="font-display text-3xl md:text-4xl tracking-editorial">
-                Gracias, {form.name || "amigo"}.
+                Gracias, {submittedName}.
               </h3>
               <p className="mt-4 text-muted-foreground">
-                Un asesor te contactará en menos de 24 horas para coordinar tu{" "}
+                En menos de 24 horas, uno de nuestros asesores se pondrá en contacto contigo para coordinar tu{" "}
                 {current.short.toLowerCase()}.
               </p>
             </div>
           ) : (
             <form
-              onSubmit={(e) => {
-                e.preventDefault();
+
+           onSubmit={async (e) => {
+              e.preventDefault();
+            
+              // Validación básica
+              if (!form.name.trim() || !form.whatsapp.trim()) {
+                alert("Completa nombre y WhatsApp");
+                return;
+              }
+
+              if (form.email && !form.email.includes("@")) {
+                alert("Email inválido");
+                return;
+              }
+
+              setLoading(true);
+
+              try {
+                await emailjs.send(
+                  "service_4ipngrh",
+                  "template_yuafivp",
+                  {
+                    name: form.name,
+                    email: form.email,
+                    whatsapp: form.whatsapp,
+                    format: current.label,
+                    message: form.notes || "Sin detalles",
+                    time: new Date().toLocaleString(), // opcional pero útil
+                  },
+                  "gF1SgS6p4w5krT19_"
+                );
+                setSubmittedName(form.name);
                 setSent(true);
-              }}
+
+                // limpiar formulario
+                setForm({
+                  name: "",
+                  email: "",
+                  whatsapp: "",
+                  notes: "",
+                });
+
+              } catch (err) {
+                console.log("ERROR", err);
+                alert("Error al enviar");
+              } finally {
+                setLoading(false);
+              }
+            }}
+
               className="bg-white text-ink rounded-sm border border-border p-8 md:p-12 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] space-y-7"
             >
               <div className="pb-4 border-b border-foreground/10">
@@ -216,56 +278,70 @@ export function ContactCTA() {
                   {current.desc}
                 </p>
               </fieldset>
+              
+            <div className="grid grid-cols-1 gap-y-5">
 
-              <div className="grid grid-cols-1 gap-y-6">
-                <Field
-                  label="Nombre"
-                  value={form.name}
-                  onChange={(v) => setForm({ ...form, name: v })}
-                  type="text"
-                  required
+              <Field
+                label="Nombre"
+                value={form.name}
+                onChange={(v) => setForm({ ...form, name: v })}
+                type="text"
+                required
+              />
+
+              <Field
+                label="WhatsApp"
+                value={form.whatsapp}
+                onChange={(v) => setForm({ ...form, whatsapp: v })}
+                type="tel"
+                required
+              />
+
+              <Field
+                label="Email (opcional)"
+                value={form.email}
+                onChange={(v) => setForm({ ...form, email: v })}
+                type="email"
+              />
+
+              <label className="block">
+                <span className="text-[0.6rem] tracking-wider-2 uppercase text-muted-foreground">
+                  {format === "muestras"
+                    ? "Dirección de envío"
+                    : "Detalles (opcional)"}
+                </span>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  rows={2}
+                  className="mt-2 w-full bg-transparent border-b border-foreground/20 py-3 text-base text-ink placeholder-muted-foreground focus:outline-none focus:border-ink transition-colors duration-300 resize-none"
                 />
-                <Field
-                  label="Email"
-                  value={form.email}
-                  onChange={(v) => setForm({ ...form, email: v })}
-                  type="email"
-                  required
-                />
-                <Field
-                  label="WhatsApp"
-                  value={form.whatsapp}
-                  onChange={(v) => setForm({ ...form, whatsapp: v })}
-                  type="tel"
-                  required
-                />
-                <label className="block">
-                  <span className="text-[0.6rem] tracking-wider-2 uppercase text-muted-foreground">
-                    {format === "muestras"
-                      ? "Dirección de envío"
-                      : "Cuéntanos sobre tu proyecto"}
-                  </span>
-                  <textarea
-                    value={form.notes}
-                    onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                    rows={1}
-                    className="mt-2 w-full bg-transparent border-b border-foreground/20 py-3 text-base text-ink placeholder-muted-foreground focus:outline-none focus:border-ink transition-colors duration-300 resize-none"
-                  />
-                </label>
-              </div>
+              </label>
+
+            </div>
 
               <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 <button
                   type="submit"
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-7 py-4 rounded-sm bg-ink text-white text-[0.78rem] tracking-wider-2 uppercase border border-ink hover:bg-transparent hover:text-ink transition-all duration-500"
+                  disabled={loading}
+                  className={`flex-1 inline-flex items-center justify-center gap-2 px-7 py-4 rounded-sm border text-[0.78rem] tracking-wider-2 uppercase transition-all duration-500 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed text-white border-gray-400"
+                      : "bg-ink text-white border-ink hover:bg-transparent hover:text-ink"
+                  }`}
                 >
-                  {current.cta} →
+                  {loading ? "Enviando..." : `${current.cta} →`}
                 </button>
-                <a
-                  href="https://wa.me/573000000000"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-sm border border-foreground/30 text-ink text-[0.78rem] tracking-wider-2 uppercase hover:bg-ink hover:text-white hover:border-ink transition-all duration-500"
+               <a
+                  href={isFormValid ? `https://wa.me/573218478313?text=${whatsappMessage}` : "#"}
+                  onClick={(e) => {
+                    if (!isFormValid) e.preventDefault();
+                  }}
+                  className={`inline-flex items-center justify-center gap-2 px-7 py-4 rounded-sm border text-[0.78rem] tracking-wider-2 uppercase transition-all duration-500 ${
+                    isFormValid
+                      ? "border-foreground/30 text-ink hover:bg-ink hover:text-white hover:border-ink"
+                      : "border-foreground/10 text-muted-foreground cursor-not-allowed"
+                  }`}
                 >
                   WhatsApp
                 </a>

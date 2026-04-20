@@ -108,7 +108,7 @@ export function Testimonials() {
             </button>
           </div>
           </div>
-          <div className="flex gap-8 md:gap-14 text-muted-foreground">
+          <div className="flex justify-center items-center gap-8 md:gap-14 text-muted-foreground text-center">
             <Metric n="+240" label="Proyectos" />
             <Metric n="+12" label="Años" />
             <Metric n="98%" label="Recomiendan" />
@@ -121,9 +121,13 @@ export function Testimonials() {
 
 function Metric({ n, label }: { n: string; label: string }) {
   return (
-    <div>
-      <p className="font-display text-2xl md:text-3xl text-foreground">{n}</p>
-      <p className="text-[0.6rem] tracking-wider-2 uppercase mt-1">{label}</p>
+    <div className="flex flex-col items-center min-w-[90px] text-center">
+      <p className="font-display text-2xl md:text-3xl text-foreground tabular-nums">
+        {n}
+      </p>
+      <p className="text-[0.6rem] tracking-wider-2 uppercase mt-1">
+        {label}
+      </p>
     </div>
   );
 }

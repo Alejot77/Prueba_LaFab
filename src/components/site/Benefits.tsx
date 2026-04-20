@@ -46,15 +46,14 @@ export function Benefits() {
             </p>
           </div>
 
-          <div className="md:col-span-5 flex justify-center md:justify-end">
+          <div className="md:col-span-5 flex justify-center md:justify-start pl-4 md:pl-8">
             <img
               src={benefitsChair}
               alt="Sillón individual de referencia"
               loading="lazy"
-              width={1024}
-              height={1280}
-              className="w-[220px] md:w-[280px] lg:w-[320px] h-auto object-contain mix-blend-multiply"
-            />
+              width={1956}
+              height={1005}
+              className="w-[380px] md:w-[520px] lg:w-[700px] xl:w-[800px] h-auto object-contain mix-blend-multiply"            />
           </div>
         </div>
 
